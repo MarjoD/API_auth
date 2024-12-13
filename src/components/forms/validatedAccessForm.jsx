@@ -1,23 +1,25 @@
 import { useContext, useEffect, useState } from "react";
 import UserContext from "../../context/userContext.jsx";
+import { errorMessage } from "../../consts/consts.jsx";
 
 export default function ValidatedAccessForm () {
     const { username, setAuthenticated } = useContext(UserContext);
     const [error, setError] = useState(null);
     const [datas, setDatas] = useState('');
 
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token') || null;
 
     const handleClick = () => {
-        localStorage.clear();
+        localStorage.removeItem('token');
+        localStorage.removeItem('username');
         setAuthenticated(null); //set state
-    }
+    };
 
     useEffect(() => {
         const requestOptions = {
             method: 'GET',
             headers: { 
-                authorization: 'Bearer ' + token,
+                authorization: token,
                 'Content-Type': 'application/json' }
         };
 
@@ -37,7 +39,7 @@ export default function ValidatedAccessForm () {
                 } else {
                     //if the response status is 200, set the message in health state to display to the user
                     setDatas(data);
-                    console.log(data);
+                    setError(null);
                 }
             })
             .catch(errorMessage => {
@@ -50,27 +52,31 @@ export default function ValidatedAccessForm () {
 
     return (
         <form>
-            <p>Congratulations, {username} !</p>
-            <p>Your token is stored in local storage ;</p>
-            <p>If it is valid, you will see the list of users below :</p>
             {error ? (
-                <p>{error}</p>
+                <>
+                    <p>{errorMessage}</p>
+
+                    <a id='Retry' className='button-link' onClick={handleClick}>Retry</a>
+                </>
             ) : ""}
             {datas ? (
-                <div className="flex">
-                    {datas.users.map((user, index) => (
-                        <div className="card" key={index}>
-                            <p>{user.username}</p>
-                            <p>{user.first_name}</p>
-                            <p>{user.last_name}</p>
-                            <p>{user.email}</p>
-                            <p>{user.birth_date.split('T')[0]}</p>
-                        </div>
-                    ))}
-                </div>
+                <>
+                    <p>Congratulations, {username} !</p>
+                    <p>Your token is stored in local storage ;</p>
+                    <p>If it is valid, you will see the list of users below :</p>
+                    <div className="flex">
+                        {datas.users.map((user, index) => (
+                            <div className="card" key={index}>
+                                <p>{user.username}</p>
+                                <p>{user.first_name}</p>
+                                <p>{user.last_name}</p>
+                                <p>{user.email}</p>
+                                <p>{user.birth_date.split('T')[0]}</p>
+                            </div>
+                        ))}
+                    </div>
+                    <a id='Disconnect' className='button-link' onClick={handleClick}>Disconnect</a>
+                </>
             ) : ""}
-
-            <a id='Disconnect' className='button-link' onClick={handleClick}>Disconnect</a>
-
         </form>
 )}

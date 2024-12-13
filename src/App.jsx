@@ -3,14 +3,14 @@ import { useEffect, useState } from "react";
 import SignUpForm from './components/forms/signUpForm';
 import LogInForm from './components/forms/logInForm';
 import ValidatedAccessForm from './components/forms/validatedAccessForm.jsx';
-import UserContext from "./context/userContext.jsx"
+import UserContext from "./context/userContext.jsx";
+import { errorMessage } from "./consts/consts.jsx";
 
 function App() {
 
     const [health, setHealth] = useState(null); //state to check API health response
     const [sign, setSign] = useState(null); //state to sign up or log in
-    const errorMessage = "Oops! An error occurred... Please try again!"; //error message to show to user
-    const [username, setAuthenticated] = useState(null);
+    const [username, setAuthenticated] = useState(localStorage.getItem('username') || null);
 
     useEffect(() => {
         //call API to find out if the API can be reached
@@ -52,7 +52,7 @@ function App() {
     return (
         <>
             <UserContext.Provider value={{ username, setAuthenticated }}>
-                {!username ? (
+                {!username || !localStorage.getItem('token') ? (
                     <>
                         {sign ? (
                     <>

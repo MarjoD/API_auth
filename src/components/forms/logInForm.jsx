@@ -1,5 +1,6 @@
 import { useState, useContext } from "react";
 import UserContext from "../../context/userContext.jsx";
+import { errorMessage } from "../../consts/consts.jsx";
 
 export default function LogInForm () {
     const [error, setError] = useState(null);
@@ -37,8 +38,11 @@ export default function LogInForm () {
                     setError(errorMessage);
                 } else {
                     //if the response status is 200, set the message in health state to display to the user
+                    console.log(data);
                     setAuthenticated(data.username);
+                    localStorage.setItem('username', data.username);
                     localStorage.setItem('token', data.accessToken);
+                    setError(null);
                 }
             })
             .catch(errorMessage => {
@@ -58,7 +62,7 @@ export default function LogInForm () {
             <input type="password" id="password" onChange={(e)=>handleChangePassword(e)} />
 
             {error ? (
-                <p>{error}</p>
+                <p>{errorMessage}</p>
             ) : ""}
 
             <a id='connect' className='button-link' onClick={handleConnection} >Connection</a>

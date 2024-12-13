@@ -1,0 +1,1 @@
+export const errorMessage = "Oops! An error occurred... Please try again!"; //error message to show to user

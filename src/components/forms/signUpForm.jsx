@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { errorMessage } from "../../consts/consts.jsx";
 
 export default function SignUpForm () {
     const [message, setMessage] = useState(null);
@@ -54,7 +55,8 @@ export default function SignUpForm () {
                 // check for error response
                 if (!response.ok) {
                     // get error message from body or default to response status
-                    const errorMessage = (data && data.message) || response.status;
+                    const error = (data && data.message) || response.status;
+                    console.log(error);
                     //show the error message for user
                     setMessage(errorMessage);
                 } else {
@@ -62,11 +64,11 @@ export default function SignUpForm () {
                     setMessage(data.message);
                 }
             })
-            .catch(errorMessage => {
+            .catch(error => {
                 //show the error message for user
                 setMessage(errorMessage);
                 //detailed error in log
-                console.log("Server error : " + errorMessage.toString());
+                console.log("Server error : " + error.toString());
             });
     };
 

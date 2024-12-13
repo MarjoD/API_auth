@@ -4,10 +4,9 @@ export const verifyAccessToken = (req, res, next) => {
   try {
     if (!req.headers.length) {
       const accessToken = req.headers.authorization;
-      const accessTokenSplit = accessToken.split(" ")[1];
 
       jwt.verify(
-        accessTokenSplit,
+        accessToken,
         process.env.JWT_SECRET_ACCES_TOKEN,
         (err, decoded) => {
           req.id_user = decoded.id_user;
